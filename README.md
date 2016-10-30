@@ -12,3 +12,4 @@ There are a few things to note for those resurrecting this bot:
 * This code was originally written using NetBeans
 * This was before WPILib had [proper versioning](https://github.com/wpilibsuite/design-docs/blob/master/Version%20Generation.adoc)
   * Officially, the WPILib version is "Java 2014 Update 0"
+  * The zip file on Slack has the library cached under `/build`
