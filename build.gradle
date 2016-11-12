@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        maven { url "http://dev.imjac.in/maven" }
+    }
+    dependencies {
+        // Keep an eye on https://github.com/Open-RIO/GradleRIO/issues/11
+        classpath "jaci.openrio.gradle:GradleRIO:4.4.3"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+apply plugin: 'GradleRIO'
+
+group 'org.teamresistance.robot15'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url "http://first.wpi.edu/FRC/roborio/maven/release" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // WPILib!
+    compile 'edu.wpi.first.wpilibj:wpilibJavaFinal:2016.5.1'
+
+    // NetworkTables!
+    compile 'edu.wpi.first.wpilib.networktables.java:NetworkTables:3.1.1-beta-1'
+}
+
+gradlerio {
+    robotClass = "org.teamresistance.mecanum.Main"
+    team = "86"
+    rioIP = "10.00.86.2" // Fallback IP if mDNS fails; may need to be updated
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest {
+        attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+        attributes 'Robot-Class': gradlerio.robotClass
+    }
+}
+
+task genJavadoc(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives genJavadoc
+}
